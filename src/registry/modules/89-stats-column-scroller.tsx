@@ -241,11 +241,16 @@ export default function StatsColumnScroller({
             the token beats hardcoding a number: this padding was previously
             tuned to a chapter pill sitting at top-6, and silently became too
             small the moment that pill moved down. */}
-        <div className="relative flex h-full flex-col px-5 pb-6 pt-[max(5rem,calc(var(--page-chrome)+1.5rem))] md:px-8 md:pb-8 md:pt-[max(6rem,calc(var(--page-chrome)+2rem))]">
-          {/* Stat band across the top */}
-          <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-8">
+        <div className="relative flex h-full flex-col px-5 pb-10 pt-[max(5rem,calc(var(--page-chrome)+1.5rem))] md:px-8 md:pb-12 md:pt-[max(6rem,calc(var(--page-chrome)+2rem))]">
+          {/* Stat band across the top. On narrow viewports the three columns
+              stack — keep each row shorter than the desktop band so the
+              standfirst and eyebrow still have room in the sticky frame. */}
+          <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-10">
             {COLUMNS.map((column, c) => (
-              <div key={column.align} className="relative min-h-[clamp(9rem,14vw,15rem)]">
+              <div
+                key={column.align}
+                className="relative min-h-[clamp(5.5rem,22vw,9rem)] sm:min-h-[clamp(9rem,14vw,15rem)]"
+              >
                 {column.stats.map((stat, i) => (
                   <StatEntry
                     key={stat.figure}
@@ -260,16 +265,18 @@ export default function StatsColumnScroller({
             ))}
           </div>
 
-          {/* Standfirst, held in the middle of the frame */}
-          <div className="flex flex-1 items-center">
-            <div className="relative w-full">
+          {/* Standfirst, held in the middle of the frame. min-h reserves space
+              for the absolutely-positioned scene copy so it can't collapse
+              into the eyebrow when the stacked mobile columns eat the height. */}
+          <div className="flex min-h-[4.5rem] flex-1 items-center sm:min-h-0">
+            <div className="relative w-full min-h-[2.75rem]">
               {SCENES.map((text, i) => (
                 <Scene key={text} text={text} progress={scrollYProgress} index={i} />
               ))}
             </div>
           </div>
 
-          <p className="text-[0.6875rem] font-bold uppercase leading-none tracking-[-0.02em] text-white/70">
+          <p className="absolute bottom-6 left-5 text-[0.6875rem] font-bold uppercase leading-none tracking-[-0.02em] text-white/70 md:bottom-8 md:left-8">
             {eyebrow}
           </p>
         </div>
